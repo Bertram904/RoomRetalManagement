@@ -19,7 +19,6 @@ import {
 export default function HomeScreen() {
   const [stats, setStats] = useState({ total: 0, available: 0, rented: 0 });
 
-  // Refresh stats every time screen is focused (sau khi thêm/sửa/xóa)
   useFocusEffect(
     useCallback(() => {
       setStats(getRoomStats());
@@ -38,16 +37,16 @@ export default function HomeScreen() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <View>
+          <View style={styles.headerTextWrap}>
             <Text style={styles.greeting}>Xin chào, Chủ nhà! 👋</Text>
             <Text style={styles.subtitle}>Quản lý nhà trọ của bạn</Text>
           </View>
           <View style={styles.headerIcon}>
-            <Ionicons name="home" size={28} color="#fff" />
+            <Ionicons name="home" size={26} color="#fff" />
           </View>
         </View>
 
-        {/* Stats cards */}
+        {/* Stats */}
         <Text style={styles.sectionTitle}>Thống kê tổng quan</Text>
         <View style={styles.statsGrid}>
           <StatCard
@@ -61,19 +60,19 @@ export default function HomeScreen() {
             icon="checkmark-circle-outline"
             label="Còn trống"
             value={stats.available}
-            color="#2E7D32"
-            bg="#E8F5E9"
+            color="#15803D"
+            bg="#DCFCE7"
           />
           <StatCard
             icon="people-outline"
             label="Đã thuê"
             value={stats.rented}
-            color="#C62828"
-            bg="#FFEBEE"
+            color="#B91C1C"
+            bg="#FEE2E2"
           />
         </View>
 
-        {/* Occupancy rate */}
+        {/* Occupancy */}
         <View style={styles.occupancyCard}>
           <View style={styles.occupancyHeader}>
             <Text style={styles.occupancyLabel}>Tỷ lệ lấp phòng</Text>
@@ -84,14 +83,19 @@ export default function HomeScreen() {
               style={[
                 styles.progressFill,
                 {
-                  width: `${occupancyRate}%`,
-                  backgroundColor: occupancyRate >= 70 ? '#2E7D32' : occupancyRate >= 40 ? '#F59E0B' : '#C62828',
+                  width: `${Math.min(occupancyRate, 100)}%`,
+                  backgroundColor:
+                    occupancyRate >= 70
+                      ? '#15803D'
+                      : occupancyRate >= 40
+                        ? '#D97706'
+                        : '#B91C1C',
                 },
               ]}
             />
           </View>
           <Text style={styles.occupancyNote}>
-            {stats.rented}/{stats.total} phòng được thuê
+            {stats.rented}/{stats.total} phòng đang cho thuê
           </Text>
         </View>
 
@@ -114,10 +118,10 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Footer hint */}
+        {/* Hint */}
         <View style={styles.hint}>
-          <Ionicons name="information-circle-outline" size={16} color="#94A3B8" />
-          <Text style={styles.hintText}>Nhấn giữ một phòng để xóa nhanh</Text>
+          <Ionicons name="information-circle-outline" size={18} color="#64748B" />
+          <Text style={styles.hintText}>Nhấn giữ một phòng trong danh sách để xóa nhanh</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -166,9 +170,9 @@ function QuickAction({ icon, label, color, bg, onPress }: QuickActionProps) {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#F5F7FB' },
+  safe: { flex: 1, backgroundColor: '#F1F5F9' },
   scroll: { flex: 1 },
-  container: { padding: 20, paddingBottom: 32 },
+  container: { padding: 16, paddingBottom: 40 },
 
   // Header
   header: {
@@ -176,54 +180,64 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#1D4ED8',
-    borderRadius: 20,
-    padding: 22,
-    marginBottom: 24,
+    borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    marginBottom: 20,
     shadowColor: '#1D4ED8',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 14,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 6,
   },
+  headerTextWrap: { flex: 1 },
   greeting: {
-    fontSize: 20,
+    fontSize: 19,
     fontWeight: '800',
     color: '#fff',
+    letterSpacing: 0.2,
   },
   subtitle: {
     fontSize: 13,
-    color: '#BFDBFE',
+    color: 'rgba(255,255,255,0.85)',
     marginTop: 4,
+    fontWeight: '500',
   },
   headerIcon: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 14,
-    padding: 10,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    borderRadius: 12,
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: 14,
+    color: '#334155',
+    marginBottom: 12,
+    marginTop: 4,
   },
 
   // Stats
   statsGrid: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
+    gap: 10,
+    marginBottom: 18,
   },
   statCard: {
     flex: 1,
-    borderRadius: 16,
-    padding: 16,
+    borderRadius: 14,
+    padding: 14,
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    minHeight: 100,
+    gap: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
     elevation: 2,
   },
   statIcon: {
@@ -231,76 +245,79 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   statValue: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: '800',
   },
   statLabel: {
     fontSize: 11,
     color: '#64748B',
-    fontWeight: '500',
+    fontWeight: '600',
     textAlign: 'center',
   },
 
   // Occupancy
   occupancyCard: {
     backgroundColor: '#fff',
-    borderRadius: 16,
+    borderRadius: 14,
     padding: 18,
-    marginBottom: 24,
+    marginBottom: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.06,
+    shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
   occupancyHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 12,
   },
   occupancyLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
+    color: '#334155',
   },
   occupancyPercent: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '800',
     color: '#1D4ED8',
   },
   progressBg: {
-    height: 10,
+    height: 8,
     backgroundColor: '#E2E8F0',
-    borderRadius: 5,
+    borderRadius: 4,
     overflow: 'hidden',
     marginBottom: 8,
   },
   progressFill: {
     height: '100%',
-    borderRadius: 5,
+    borderRadius: 4,
   },
   occupancyNote: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: '#64748B',
     textAlign: 'right',
   },
 
   // Quick actions
   actionsGrid: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 24,
+    gap: 10,
+    marginBottom: 20,
   },
   actionCard: {
     flex: 1,
-    borderRadius: 16,
+    borderRadius: 14,
     borderWidth: 1.5,
-    padding: 20,
+    padding: 18,
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'center',
+    minHeight: 88,
+    gap: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.04,
     shadowRadius: 6,
     elevation: 2,
   },
@@ -313,11 +330,17 @@ const styles = StyleSheet.create({
   hint: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
     justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 12,
+    marginTop: 4,
   },
   hintText: {
     fontSize: 12,
-    color: '#94A3B8',
+    color: '#64748B',
+    flex: 1,
   },
 });
